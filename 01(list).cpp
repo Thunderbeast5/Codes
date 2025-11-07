@@ -1,3 +1,5 @@
+/*Flight management: There are flight paths between cities. If there is a flight between city A and city B, then there is an edge between the cities. The cost of the edge can be the time that flight takes to reach city B from A, or the amount of fuel used for the journey.
+Write a menu driven C++ program to represent this as a graph using adjacency matrix and adjacency list. The node can be represented by the airport name or name of the city. Check whether cities are connected through flight or not. Compare the storage representation.*/
 #include <iostream>
 #include <string>
 using namespace std;

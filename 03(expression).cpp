@@ -1,7 +1,8 @@
 /*Write a menu-driven program to construct the expression tree from the given prefix expression. 
 Example: +-a*bc/def and perform the following operations. 
 1.Traverse it using the inorder, preorder, and postorder, traversal, (recursive, and non-recursive ) 
-2. change a tree so that rows of the left and right pointers are swapped at every node.*/
+2. change a tree so that rows of the left and right pointers are swapped at every node.
+3. Count leaf nodes, internal nodes, and total nodes*/
 
 #include <iostream>
 #include <stack>
@@ -122,6 +123,29 @@ void swapTree(Node* root) {
     swapTree(root->right);
 }
 
+// Count leaf nodes (nodes with no children)
+int countLeafNodes(Node* root) {
+    if (root == NULL)
+        return 0;
+    if (root->left == NULL && root->right == NULL)
+        return 1;
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+// Count internal nodes (nodes with at least one child)
+int countInternalNodes(Node* root) {
+    if (root == NULL || (root->left == NULL && root->right == NULL))
+        return 0;
+    return 1 + countInternalNodes(root->left) + countInternalNodes(root->right);
+}
+
+// Count total nodes
+int countTotalNodes(Node* root) {
+    if (root == NULL)
+        return 0;
+    return 1 + countTotalNodes(root->left) + countTotalNodes(root->right);
+}
+
 // Main menu
 int main() {
     Node* root = NULL;
@@ -135,19 +159,24 @@ int main() {
         cout << "3. Preorder Traversal (Recursive & Non-Recursive)\n";
         cout << "4. Postorder Traversal (Recursive & Non-Recursive)\n";
         cout << "5. Swap Left and Right Children\n";
-        cout << "6. Exit\n";
+        cout << "6. Count Nodes (Leaf, Internal, Total)\n";
+        cout << "7. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
             case 1:
-                cout << "Enter Prefix Expression (e.g. +AB): ";
+                cout << "Enter Prefix Expression (e.g. +-a*bc/def): ";
                 cin >> prefix;
                 root = constructTree(prefix);
                 cout << "Expression Tree constructed successfully.\n";
                 break;
 
             case 2:
+                if (root == NULL) {
+                    cout << "Tree is empty! Please construct tree first.\n";
+                    break;
+                }
                 cout << "Recursive Inorder: ";
                 inorder(root);
                 cout << "\nNon-Recursive Inorder: ";
@@ -156,6 +185,10 @@ int main() {
                 break;
 
             case 3:
+                if (root == NULL) {
+                    cout << "Tree is empty! Please construct tree first.\n";
+                    break;
+                }
                 cout << "Recursive Preorder: ";
                 preorder(root);
                 cout << "\nNon-Recursive Preorder: ";
@@ -164,6 +197,10 @@ int main() {
                 break;
 
             case 4:
+                if (root == NULL) {
+                    cout << "Tree is empty! Please construct tree first.\n";
+                    break;
+                }
                 cout << "Recursive Postorder: ";
                 postorder(root);
                 cout << "\nNon-Recursive Postorder: ";
@@ -172,18 +209,33 @@ int main() {
                 break;
 
             case 5:
+                if (root == NULL) {
+                    cout << "Tree is empty! Please construct tree first.\n";
+                    break;
+                }
                 swapTree(root);
                 cout << "Tree swapped successfully.\n";
                 break;
 
             case 6:
+                if (root == NULL) {
+                    cout << "Tree is empty! Please construct tree first.\n";
+                    break;
+                }
+                cout << "\n--- Node Count Statistics ---\n";
+                cout << "Leaf Nodes: " << countLeafNodes(root) << endl;
+                cout << "Internal Nodes: " << countInternalNodes(root) << endl;
+                cout << "Total Nodes: " << countTotalNodes(root) << endl;
+                break;
+
+            case 7:
                 cout << "Exiting...\n";
                 break;
 
             default:
                 cout << "Invalid choice! Try again.\n";
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
