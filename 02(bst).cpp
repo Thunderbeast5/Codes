@@ -6,6 +6,7 @@
 5.print values in ascending and descending order.*/
 
 #include <iostream>
+#include <stack> 
 using namespace std;
 
 struct Node {
@@ -74,12 +75,72 @@ void printAscending(Node* root) {   // Inorder Traversal
     }
 }
 
+void printAscendingNonRec(Node* root) {
+    stack<Node*> st;
+    Node* current = root;
+
+    while (current != NULL || !st.empty()) {
+        while (current != NULL) {      // Go to leftmost node
+            st.push(current);
+            current = current->left;
+        }
+
+        current = st.top();            // Node to process
+        st.pop();
+
+        cout << current->data << " ";  // Print in ascending order
+
+        current = current->right;      // Move to right subtree
+    }
+}
+
+
 void printDescending(Node* root) {
     if (root != NULL) {
         printDescending(root->right);
         cout << root->data << " ";
         printDescending(root->left);
     }
+}
+
+void printDescendingNonRec(Node* root) {
+    stack<Node*> st;
+    Node* current = root;
+
+    while (current != NULL || !st.empty()) {
+        while (current != NULL) {     // Go to rightmost node
+            st.push(current);
+            current = current->right;
+        }
+
+        current = st.top();
+        st.pop();
+
+        cout << current->data << " "; // Print in descending order
+
+        current = current->left;      // Move to left subtree
+    }
+}
+
+
+int countLeafNodes(Node* root) {
+    if (root == NULL)
+        return 0;
+    if (root->left == NULL && root->right == NULL)
+        return 1;
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+int countInternalNodes(Node* root) {
+    if (root == NULL || (root->left == NULL && root->right == NULL))
+        return 0;
+    return 1 + countInternalNodes(root->left) + countInternalNodes(root->right);
+}
+
+int countTotalNodes(Node* root) {
+    if (root == NULL)
+        return 0;
+    return 1 + countTotalNodes(root->left) + countTotalNodes(root->right);
 }
 
 int main() {
@@ -93,7 +154,8 @@ int main() {
         cout << "3. Find minimum value\n";
         cout << "4. Search a value\n";
         cout << "5. Print ascending and descending order\n";
-        cout << "6. Exit\n";
+        cout << "6. Show counts (total / leaf / internal)\n";
+        cout << "7. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -128,15 +190,23 @@ int main() {
                 printDescending(root);
                 cout << endl;
                 break;
-
+                
             case 6:
+                cout << "Total Nodes: " << countTotalNodes(root) << endl;
+                cout << "Leaf Nodes: " << countLeafNodes(root) << endl;
+                cout << "Internal Nodes: " << countInternalNodes(root) << endl;
+                break;
+            
+            case 7:
                 cout << "Exiting...\n";
                 break;
+
+
 
             default:
                 cout << "Invalid Choice! Try Again.\n";
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
