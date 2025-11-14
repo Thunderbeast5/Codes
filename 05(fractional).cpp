@@ -2,92 +2,92 @@
 #include <algorithm>
 using namespace std;
 
-struct Item {
-    int itemNo, value, weight;
-    Item(int no = 0, int v = 0, int w = 0) : itemNo(no), value(v), weight(w) {}
-};
+int main() {
+    int n, capacity;
+    cout << "Enter number of items: ";
+    cin >> n;
 
-bool cmp(Item a, Item b) {
-    double r1 = (double)a.value / a.weight;
-    double r2 = (double)b.value / b.weight;
-    return r1 > r2;
-}
+    int values[20], weight[20];
+    double ratio[20]; 
 
-double fractionalKnapsack(Item arr[], int n, int capacity) {
-    sort(arr, arr + n, cmp);
-    
-    int curWeight = 0;
-    double finalValue = 0.0;
-    
-    cout << "\nKnapsack Filling:\n";
+    cout << "Enter capacity of knapsack: ";
+    cin >> capacity;
+
     for (int i = 0; i < n; i++) {
-        if (curWeight + arr[i].weight <= capacity) {
-            curWeight += arr[i].weight;
-            finalValue += arr[i].value;
-            cout << "Item " << arr[i].itemNo << ": Full (W:" << arr[i].weight 
-                 << ", V:" << arr[i].value << ")\n";
+        cout << "Enter value and weight of item " << i + 1 << ": ";
+        cin >> values[i] >> weight[i];
+        ratio[i] = (double)values[i] / weight[i]; 
+    }
+
+    cout << "\nCalculating value/weight ratio for each item:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "Item " << i + 1 << ": value = " << values[i]
+             << ", weight = " << weight[i]
+             << ", ratio = " << ratio[i] << endl;
+    }
+
+    cout << "\nSorting items by value/weight ratio in descending order:\n";
+
+    // Bubble sort based on ratio
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (ratio[i] < ratio[j]) {
+                swap(ratio[i], ratio[j]);
+                swap(values[i], values[j]);
+                swap(weight[i], weight[j]);
+                cout << "Swapped item " << i + 1 << " with item " << j + 1 << endl;
+            }
+        }
+    }
+
+    //Selection Sort based on ratio
+    /*for (int i = 0; i < n - 1; i++) {
+    int maxIndex = i;
+    for (int j = i + 1; j < n; j++) {
+        if (ratio[j] > ratio[maxIndex]) {
+            maxIndex = j;
+        }
+    }
+
+    if (maxIndex != i) {
+        swap(ratio[i], ratio[maxIndex]);
+        swap(values[i], values[maxIndex]);
+        swap(weight[i], weight[maxIndex]);
+        cout << "Swapped item " << i + 1 << " with item " << maxIndex + 1 << endl;
+    }
+}*/
+
+    cout << "\nItems after sorting:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "Item " << i + 1 << ": value = " << values[i]
+             << ", weight = " << weight[i]
+             << ", ratio = " << ratio[i] << endl;
+    }
+
+    float totalValue = 0, currentWeight = 0;
+
+    cout << "\nFilling the knapsack:\n";
+    for (int i = 0; i < n; i++) {
+        if (currentWeight + weight[i] <= capacity) {
+            currentWeight += weight[i];
+            totalValue += values[i];
+            cout << "Taking full item " << i + 1
+                 << " (weight = " << weight[i]
+                 << ", value = " << values[i]
+                 << "). Current weight: " << currentWeight
+                 << ", total value: " << totalValue << endl;
         } else {
-            int remain = capacity - curWeight;
-            double fraction = (double)remain / arr[i].weight;
-            finalValue += arr[i].value * fraction;
-            cout << "Item " << arr[i].itemNo << ": Fraction " << fraction 
-                 << " (W:" << remain << ", V:" << arr[i].value * fraction << ")\n";
+            float remain = capacity - currentWeight;
+            totalValue += ratio[i] * remain;
+            cout << "Taking fractional part of item " << i + 1
+                 << " (weight = " << remain
+                 << ", value = " << ratio[i] * remain
+                 << "). Knapsack is full now." << endl;
             break;
         }
     }
-    return finalValue;
-}
 
-int main() {
-    Item items[100];
-    int n = 0, capacity = 0, choice;
-    
-    do {
-        cout << "\n--- Fractional Knapsack Menu ---\n";
-        cout << "1. Enter Items\n";
-        cout << "2. Set Capacity\n";
-        cout << "3. Solve Knapsack\n";
-        cout << "4. Exit\n";
-        cout << "Choice: ";
-        cin >> choice;
-        
-        switch (choice) {
-            case 1:
-                cout << "Number of items: ";
-                cin >> n;
-                for (int i = 0; i < n; i++) {
-                    items[i].itemNo = i + 1;
-                    cout << "Item " << i+1 << " - Value: ";
-                    cin >> items[i].value;
-                    cout << "Item " << i+1 << " - Weight: ";
-                    cin >> items[i].weight;
-                }
-                cout << "Items entered successfully!\n";
-                break;
-                
-            case 2:
-                cout << "Enter capacity: ";
-                cin >> capacity;
-                cout << "Capacity set to " << capacity << endl;
-                break;
-                
-            case 3:
-                if (n == 0 || capacity == 0) {
-                    cout << "Enter items and capacity first!\n";
-                } else {
-                    double result = fractionalKnapsack(items, n, capacity);
-                    cout << "\nMaximum Profit: " << result << endl;
-                }
-                break;
-                
-            case 4:
-                cout << "Exiting...\n";
-                break;
-                
-            default:
-                cout << "Invalid choice!\n";
-        }
-    } while (choice != 4);
-    
+    cout << "\nMaximum value that can be obtained = " << totalValue << endl;
+
     return 0;
 }

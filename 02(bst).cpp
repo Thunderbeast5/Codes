@@ -1,10 +1,3 @@
-/*Write a menu-driven C++ program to construct a binary search tree by inserting the values in order. Give considering at beginning with an empty binary search tree after considering a binary tree. 
-1.Insert new node, 
-2.find number of node in the longest path from the root,
-3.minimum data value found in the tree, 
-4.search value,
-5.print values in ascending and descending order.*/
-
 #include <iostream>
 #include <stack> 
 using namespace std;
@@ -142,6 +135,44 @@ int countTotalNodes(Node* root) {
         return 0;
     return 1 + countTotalNodes(root->left) + countTotalNodes(root->right);
 }
+
+/*
+Node* findMinNode(Node* root) {
+    Node* current = root;
+    while (current && current->left != NULL)
+        current = current->left;
+    return current;
+}
+
+Node* deleteNode(Node* root, int key) {
+    if (root == NULL)
+        return root;
+
+    // Traverse to find the node to delete
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+    else {
+        // Case 1 & 2: Node has 0 or 1 child
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        } else if (root->right == NULL) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+
+        // Case 3: Node has 2 children
+        Node* temp = findMinNode(root->right);
+        root->data = temp->data; // Copy inorder successor data
+        root->right = deleteNode(root->right, temp->data); // Delete successor
+    }
+
+    return root;
+}*/
 
 int main() {
     Node* root = NULL;
